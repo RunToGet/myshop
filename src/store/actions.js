@@ -43,7 +43,7 @@ export default{
     },
 
     //获取食物分类列表
-    async getFoodTypeList({commit}){
+    async getCategorys({commit}){
         const result = await reqFoodTypeList()
         // console.log(result)
         if(result.data.code==0){

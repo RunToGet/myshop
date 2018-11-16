@@ -1,5 +1,6 @@
 <template>
  <section class="msite">
+     <!-- 头部组件 -->
     <HeaderTop :title="address.name">
         <router-link to="/search" slot="left" class="left">
             <i class="iconfont icon-tubiao08"></i>
@@ -9,57 +10,12 @@
             <span v-else>登录|注册</span>
         </router-link>
     </HeaderTop>
+    <!-- 轮播图组件 -->
     <MsiteNav />
-    <!-- <nav class="msite_nav">
-       <div class="swiper-container">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide" style="width:100%" v-for="(foodCategory,index) in foodCategorys" :key="index">
-                    <a href="javascript:;" class="msite_nav_item" v-for="(category,index) in foodCategory" :key="index">
-                        <img :src="base_url+category.image_url" alt="category.description" class="nav_item_img">
-                        <p class="nav_item_title">{{category.title}}</p>
-                    </a>
-                </div>
-           </div>
-           <div class="swiper-pagination"></div>
-       </div>
-    </nav> -->
+    <!-- 食物列表组件 -->
     <div class="msite_shop_list">
         <div class="shop_list_header">附近商家</div>
-        <div class="shop_container">
-            <ul>
-                <li v-for="(shop,index) in shops" :key="index" @click="IntoShop(shop)">
-                    <a href="javascript:;" class="shop_item">
-                        <div class="shop_left"><img class="shop_pic" :src="shopImg_base_url+shop.image_path" alt=""></div>
-                        <div class="shop_right">
-                            <section class="shop_derail_header">
-                                <div>品牌</div>
-                                <h4>{{shop.name}}</h4>
-                                <ul>
-                                    <li v-for="(support,index) in shop.supports" :key="index">{{support.icon_name}}</li>
-                                </ul>
-                            </section>
-                            <section class="shop_rating_order">
-                                <div class="shop_rating_order_left">
-                                    <div class="star">
-                                        <span class="star_item" :class="item" v-for="(item,index) in ratingArr(shop.rating)" :key="index"></span>
-                                        <!-- <span class="star_item on"></span> -->
-                                        <!-- <span class="star_item on"></span> -->
-                                        <!-- <span class="star_item half"></span> -->
-                                        <!-- <span class="star_item off"></span> -->
-                                    </div>
-                                    <div class="rating">{{shop.rating}}</div>
-                                    <div class="order_num">月售{{shop.recent_order_num}}单</div>
-                               </div>
-                               <div class="shop_rating_order_right">{{shop.delivery_mode.text}}</div>
-                            </section>
-                            <section class="shop_distance">
-                                <div class="distance_fee">￥{{shop.float_minimum_order_amount}}起送/配送费约￥{{shop.float_delivery_fee}}</div>
-                            </section>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-        </div>
+        <ShopList />
     </div>
  </section>
 </template>
@@ -69,6 +25,8 @@
 import HeaderTop from "../../components/HeaderTop/HeaderTop.vue"
 //引入轮播图组件
 import MsiteNav from "../../components/MsiteNav/MsiteNav.vue"
+//引入食物列表组件
+import ShopList from "../../components/ShopList/ShopList.vue"
 
 //引入swiper插件和样式
 // import Swiper from "swiper";
@@ -86,7 +44,7 @@ export default {
   },  
 
     computed:{
-        ...mapState(['address','userInfo','categorys','shops']),
+        ...mapState(['address','userInfo','shops']),
         link_to(){
             if(this.userInfo._id){
                 return '/userinfo'
@@ -149,14 +107,16 @@ export default {
 
     components: {
         HeaderTop,
-        MsiteNav
+        MsiteNav,
+        ShopList
     },
 
     mounted(){
         //获取位置详情，这个应该在app.vue中执行
         // this.$store.dispatch('getAddress')
+        // vuex中获取数据的方法放在路由组件中，如果这个数据仅在当前页面使用
         //获取轮播图的数据
-        this.$store.dispatch('getFoodTypeList')
+        this.$store.dispatch('getCategorys')
         //获取附近商家数据
         this.$store.dispatch('getShops')
     }
@@ -187,6 +147,7 @@ export default {
   color: #fff;
   font-size: 14px;
 }
+/* 商家列表 */
 .msite_shop_list{
     margin-top: 10px;
     border-top:1px solid #e8e8e8;
@@ -196,108 +157,5 @@ export default {
     font-size: 14px;
     line-height: 20px;
     color: #999;
-}
-/* shop_list */
-.shop_item{
-    display: block;
-    padding: 15px 8px;
-    overflow: hidden;
-}
-.shop_left{
-    float: left;
-    box-sizing: border-box;
-    height: 75px;
-    width: 23%;
-    padding-right: 10px;
-}
-.shop_pic {
-    width: 100%;
-    height: 100%;
-}
-.shop_right{
-    float: right;
-    width: 77%;
-    text-align: left;
-}
-.shop_derail_header div{
-    /* float: left; */
-    display: inline-block;
-    padding: 2px;
-    color: black;
-    font-weight: 500;
-    font-size: 10px;
-    background-color: #ffd930;
-    margin-right: 5px;
-    vertical-align: 2px;
-}
-.shop_derail_header h4{
-    display: inline-block;
-    color: #333;
-    font-weight: 700;
-    width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.shop_derail_header ul{
-    float: right;
-    line-height: 19px;
-}
-.shop_derail_header ul li{
-    float: left;
-    font-size: 10px;
-    padding: 0 2px;
-    border:1px solid #f1f1f1;
-}
-.shop_rating_order{
-    overflow: hidden;
-    width: 100%;
-    margin-top:18px;
-    margin-bottom: 8px;
-}
-.shop_rating_order_left{
-    float: left;
-}
-.star,.rating,.order_num{
-    display: inline-block;
-}
-.star .star_item{
-    display: inline-block;
-    width: 10px;
-    height: 10px; 
-}
-.star{
-    margin-right: 5px;
-}
-.star .on{
-    background: url("./images/star_on.png");
-    background-size: 10px 10px;
-}
-.star .half{
-    background: url("./images/star_half.png");
-    background-size: 10px 10px;
-}
-.star .off{
-    background: url("./images/star_off.png");
-    background-size: 10px 10px;
-}
-.rating{
-    font-size: 12px;
-    color: #ff6000;
-    margin-right: 5px;
-}
-.order_num{
-    font-size: 12px;
-    color:#333;
-}
-.shop_rating_order_right{
-    float: right;
-    color:#02a774;
-    font-size: 10px;
-    border: 1px solid #02a774;
-}
-.distance_fee{
-    font-size: 12px;
-    color:#666;
 }
 </style>
