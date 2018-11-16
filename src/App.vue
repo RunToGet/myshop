@@ -1,6 +1,7 @@
 <template>
    <div id="app">
-      <router-view></router-view>
+        <router-view></router-view>
+     
       <FooterGuide v-show="$route.meta.showFooter" />
    </div>
 </template>
@@ -22,6 +23,8 @@ export default {
 <style>
 #app{
   height: 100%;
+  height: 100%;
+  background-color: #f5f5f5;
   /* overflow: hidden; */
 }
 </style>

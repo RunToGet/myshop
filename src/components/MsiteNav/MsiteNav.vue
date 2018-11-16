@@ -1,6 +1,6 @@
 <template>
     <nav class="msite_nav">
-       <div class="swiper-container">
+       <div v-if="foodCategorys.length" class="swiper-container">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" style="width:100%" v-for="(foodCategory,index) in foodCategorys" :key="index">
                     <a href="javascript:;" class="msite_nav_item" v-for="(category,index) in foodCategory" :key="index">
@@ -10,6 +10,10 @@
                 </div>
            </div>
            <div class="swiper-pagination"></div>
+       </div>
+       <!-- 在网络未加载出来的时候能够显示一张结构图，有利于用户体验 -->
+       <div v-else>
+           <img src="./images/msite_back.svg" alt="">
        </div>
     </nav>
 </template>
@@ -66,6 +70,7 @@
   height: 200px;
   /* background: pink; */
   margin-top: 45px;
+  background-color: #fff;
 }
 .msite_nav_item {
   width: 25%;

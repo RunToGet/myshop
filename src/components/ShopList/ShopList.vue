@@ -1,10 +1,8 @@
 <template>
-    <div class="msite_shop_list">
-        <div class="shop_list_header">附近商家</div>
         <div class="shop_container">
-            <ul>
+            <ul v-if="shops.length">
                 <li v-for="(shop,index) in shops" :key="index" @click="$router.push('/shop')">
-                    <a href="javascript:;" class="shop_item">
+                    <div href="javascript:;" class="shop_item">
                         <div class="shop_left"><img class="shop_pic" :src="shopImg_base_url+shop.image_path" alt=""></div>
                         <div class="shop_right">
                             <section class="shop_derail_header">
@@ -16,13 +14,8 @@
                             </section>
                             <section class="shop_rating_order">
                                 <div class="shop_rating_order_left">
-                                    <div class="star">
-                                        <span class="star_item" :class="item" v-for="(item,index) in ratingArr(shop.rating)" :key="index"></span>
-                                        <!-- <span class="star_item on"></span> -->
-                                        <!-- <span class="star_item on"></span> -->
-                                        <!-- <span class="star_item half"></span> -->
-                                        <!-- <span class="star_item off"></span> -->
-                                    </div>
+                                    <!-- Star组件 -->
+                                    <Star :score="shop.rating" :size="24"  />    
                                     <div class="rating">{{shop.rating}}</div>
                                     <div class="order_num">月售{{shop.recent_order_num}}单</div>
                                </div>
@@ -32,15 +25,20 @@
                                 <div class="distance_fee">￥{{shop.float_minimum_order_amount}}起送/配送费约￥{{shop.float_delivery_fee}}</div>
                             </section>
                         </div>
-                    </a>
+                    </div>
+                </li>
+            </ul>
+            <ul v-else>
+                <li v-for="item in 6" :key="item">
+                    <img src="./images/shop_back.svg" alt="">
                 </li>
             </ul>
         </div>
-    </div>
 </template>
 
 <script>
     import {mapState} from 'vuex'
+    import Star from "../../components/Star/Star.vue"
     export default {
         data(){
             return {
@@ -49,21 +47,15 @@
         },
         computed:{
             ...mapState(['shops'])
+        },
+        components:{
+            Star
         }
     }
 </script>
 
 <style>
-.msite_shop_list{
-    margin-top: 10px;
-    border-top:1px solid #e8e8e8;
-}
-.shop_list_header{
-    padding: 10px 10px 0 10px;
-    font-size: 14px;
-    line-height: 20px;
-    color: #999;
-}
+
 /* shop_list */
 .shop_item{
     display: block;
@@ -125,29 +117,6 @@
 .shop_rating_order_left{
     float: left;
 }
-.star,.rating,.order_num{
-    display: inline-block;
-}
-.star .star_item{
-    display: inline-block;
-    width: 10px;
-    height: 10px; 
-}
-.star{
-    margin-right: 5px;
-}
-.star .on{
-    background: url("./images/star_on.png");
-    background-size: 10px 10px;
-}
-.star .half{
-    background: url("./images/star_half.png");
-    background-size: 10px 10px;
-}
-.star .off{
-    background: url("./images/star_off.png");
-    background-size: 10px 10px;
-}
 .rating{
     font-size: 12px;
     color: #ff6000;
@@ -166,5 +135,8 @@
 .distance_fee{
     font-size: 12px;
     color:#666;
+}
+.rating,.order_num{
+    display: inline-block;
 }
 </style>
