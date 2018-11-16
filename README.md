@@ -77,5 +77,7 @@ watch:{
 #### ShopList
 1. 普通的v-for遍历数据。使用到Star组件，使用props进行父子间的数据传递
 2. 使用 v-for进行循环的时候，可以直接使用`v-for="item in 6" :key="item"` 即可遍历6次
+3. 学会使用伪类和伪元素，伪元素必须包含content
 #### Star
-1. ES6的字符串模板在行内属性中的使用：`:class="`star-${shop-ratings}`"`
+1. ES6的字符串模板在行内属性中的使用
+2. 注意html结构与css样式的书写，可以继续改进
