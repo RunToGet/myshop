@@ -12,7 +12,7 @@
             <div class="message_login" v-show="loginType">
                 <section class="message_login_phone">
                     <input type="text" placeholder="手机号" v-model="phone">
-                    <button class="getCode" :class="{fColor:isDisabled}" :disabled=!isDisabled @click.prevent="getCode">
+                    <button class="getCode" :class="{fColor:isRightPhone}" :disabled=!isRightPhone @click.prevent="getCode">
                         {{countDown ? '已发送'+countDown+'s' : '获取验证码'}}
                     </button>
                 </section>
@@ -68,14 +68,16 @@ import {reqMessageCode,loginByPhone,loginByName} from '../../api/index.js'
     },
 
     computed: {
-        isDisabled(){
+        isRightPhone(){
             return (/^1\d{10}$/).test(this.phone)
         }
     },
 
     beforeMount() {},
 
-    mounted() {},
+    mounted() {
+        this.refreshCaptcha()
+    },
 
     methods: {
         
@@ -83,7 +85,7 @@ import {reqMessageCode,loginByPhone,loginByName} from '../../api/index.js'
        async getCode(){
            console.log(this.timeId)
            if(!this.timeId){
-               this.countDown = 10;
+               this.countDown = 60;
                this.timeId = setInterval(()=>{
                    this.countDown--;
                    if(this.countDown<=0){
@@ -92,11 +94,13 @@ import {reqMessageCode,loginByPhone,loginByName} from '../../api/index.js'
                    }
                },1000)
                const result = await reqMessageCode(this.phone)
-                if(result.data.code==1){
-                    alert("发送失败")
-                    this.countDown=0
-                    clearInterval(this.timeId)
-                    this.timeId = null
+                if(result.data.code==1){   //发送失败
+                alert("result.msg")
+                    if(this.countDown){
+                        this.countDown=0
+                        clearInterval(this.timeId)
+                        this.timeId = null
+                    }
                 }
            }
         },
@@ -107,7 +111,6 @@ import {reqMessageCode,loginByPhone,loginByName} from '../../api/index.js'
             }else{    //用户名登录
                 this.loginByNameAndPwd()
             }   
-            
         },
 
         //通过手机号登录
@@ -127,6 +130,9 @@ import {reqMessageCode,loginByPhone,loginByName} from '../../api/index.js'
             if(result.data.code){
                 alert(result.data.msg)
             }else{
+                this.countDown=0
+                clearInterval(this.timeId)
+                this.timeId = null
                 this.$store.dispatch('getUserInfo',result.data.data)
                 this.$router.back()
             }

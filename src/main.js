@@ -15,6 +15,11 @@ Vue.component(Header.name,Header)
 Vue.component(Tabbar.name, Tabbar);
 Vue.component(TabItem.name, TabItem);
 
+
+// 注册全局组件标签,这个是在全局都可以使用
+import  {Button} from 'mint-ui'
+Vue.component(Button.name,Button)
+
 new Vue({
   el:"#app",
   render:h => h(App),

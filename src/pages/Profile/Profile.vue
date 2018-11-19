@@ -1,19 +1,19 @@
 <template>
  <div class="profile">
-   <HeaderTop title="我的" />
-   <div class="profile_header">
-        <router-link :to="link_to" class="to_login">
+    <HeaderTop title="我的" />
+    <div class="profile_header">
+        <router-link :to="userInfo._id? '/userinfo' : '/login'" class="to_login">
               <div class="login_avatar"><i class="iconfont icon-avatar"></i></div>
               <div class="login_text">
-                  <div class="login_userName" v-if="userInfo._id">{{userInfo.name || userInfo.phone}}</div>
+                  <div class="login_userName" v-if="userInfo._id"><span v-if="userInfo.phone" class="iconfont icon-shouji"></span>{{userInfo.name || userInfo.phone}}</div>
                   <div class="login_submit" v-else>登录/注册</div>
                   <div class="login_phone" v-if="!userInfo.phone"><span class="iconfont icon-shouji"></span>暂无绑定手机号</div>
                   <div class="login_phone" v-else>暂无用户名</div>
               </div>
               <div class="arrow"><span class="iconfont icon-arrow-right"></span></div>
         </router-link>
-   </div>
-   <div class="login_info_data">
+    </div>
+    <div class="login_info_data">
         <div class="info_balance">
             <p><span>0.00</span>元</p>
             <div>我的余额</div>
@@ -26,24 +26,27 @@
             <p><span>0</span>分</p>
             <div>我的积分</div>
         </div>
-   </div>
-   <section class="my_order">
+    </div>
+    <section class="my_order">
       <div class="my_order_title"><span class="iconfont icon-dingdan"></span>我的订单</div>
       <div class="more"><span class="iconfont icon-arrow-right"></span></div>
-   </section>
-      <section class="my_score">
+    </section>
+    <section class="my_score">
       <div class="my_score_title"><span class="iconfont icon-jifen"></span>积分商城</div>
       <div class="more"><span class="iconfont icon-arrow-right"></span></div>
-   </section>
-      <section class="my_member">
+    </section>
+    <section class="my_member">
       <div class="my_member_title"><span class="iconfont icon-VIP"></span>Mint外卖会员卡</div>
       <div class="more"><span class="iconfont icon-arrow-right"></span></div>
-   </section>
-      <section class="my_service">
+    </section>
+    <section class="my_service">
       <div class="my_service_title"><span class="iconfont icon-lianxikefu"></span>服务中心</div>
       <div class="more"><span class="iconfont icon-arrow-right"></span></div>
-   </section>
-   <button class="quit" @click="logout" v-if="userInfo._id">退出登录</button>
+    </section>
+    <section>
+      <mt-button type="danger" style="width:100%;" v-if="userInfo._id" @click="logout">退出登录</mt-button>
+    </section>
+   <!-- <button class="quit" @click="logout" v-if="userInfo._id">退出登录</button> -->
  </div>
 </template>
 
@@ -51,30 +54,25 @@
     import HeaderTop from '../../components/HeaderTop/HeaderTop.vue'
     import {mapState} from 'vuex'
 
+    import {MessageBox,Toast} from 'mint-ui'
+
     export default{
       
       computed:{
         ...mapState(['userInfo']),
-        link_to(){
-          if(this.userInfo._id){
-            return '/userinfo'
-          }else{
-            return '/login'
-          }
-        }
       },
       methods:{
-        // 登录
-        // login(){
-        //   this.$router.push('/login')
-        // },
-
         // 退出登录
         logout(){
-          if(confirm("确认退出吗")){
-            this.$store.dispatch('logout')
-          }
-          
+         MessageBox.confirm('确认退出吗？').then(
+           action=>{
+             this.$store.dispatch('logout')
+             Toast('退出成功')
+           },
+           action=>{
+             console.log("取消退出")
+           }
+         ) 
         }
       },
       components:{
